@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}What's going on out there?{% endblock %}
+
+{% block body %}
+{% from "_formhelpers.html" import render_field %}
+<h1>{{ SITE_NAME }} - What's going on out there?</h1>
+<div class="forms">
+<form method="GET" action="/">
+    {{ render_field(form.q) }}
+    <div class="form-submit"><input type="submit" value="Search"></div>
+</form>
+</div>
+<div class="clear"><!-- IE7 --></div>
+{% if entries %}
+<div class="entries">
+ {% for entry in entries %}
+ <div class="entry">
+	<div class="entry-profile">
+	{% for link in entry.links %}
+		{% if link.rel == 'image' and ('profile_image' in link.href) %}
+		<img src="{{ link.href }}" width="48" height="48" />
+		{% endif %}
+	{% endfor %}
+	</div>
+	<div class="entry-title">
+	{{ entry.title|twitterize|urlize }}
+	</div>
+	<div class="entry-meta">
+		By <a href="{{ entry.author_detail.href }}">{{ entry.author_detail.name }}</a> on 
+		<a href="{{ entry.link }}">{{ entry.updated_parsed|humanize_date }}</a>
+	</div>
+ </div>
+ {% endfor %}
+{% endif %}
+</div>
+{% endblock %}
