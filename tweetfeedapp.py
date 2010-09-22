@@ -50,8 +50,12 @@ def index():
     entries = None
     form = SearchForm(request.args)
     if request.method == 'GET' and form.validate():
-        feed_url = BASE_FEED_URL % form.q.data.replace(' ','+')
-        print feed_url
+        data = form.q.data
+        if data:
+            # query has to use + and not space to
+            # pull correct data
+            data = data.replace(' ','+')
+        feed_url = BASE_FEED_URL % data
         f = feedparser.parse(feed_url)
         entries = f.entries
     return render_template('index.html', form=form, entries=entries)
